@@ -19,14 +19,22 @@ function init() {
         //console.log(event.target.className);
         if(event.target.className == "todo_item_blank" || event.target.className == "todo_item_blank last_blank") {
             event.dataTransfer.dropEffect = "copy";
-            event.target.style.background = "powderblue";
+            event.target.style.backgroundColor = "powderblue";
             event.target.style.transition = "background-color .35s";
+            event.target.style.height = "6.5rem";
+            event.target.style.borderRadius = "1rem";
+            event.target.style.marginTop = "0.75rem"
+            event.target.style.marginBottom = "0.75rem";
         }
     }, false);
     container.addEventListener("dragleave", function(event) {
         if(event.target.className == "todo_item_blank" || event.target.className == "todo_item_blank last_blank") {
             event.target.style.background = "";
             event.target.style.transition = "";
+            event.target.style.height = "";
+            event.target.style.borderRadius = "";
+            event.target.style.marginTop = ""
+            event.target.style.marginBottom = "";
         }
     }, false);
     container.addEventListener("drop", function(event) {
@@ -50,6 +58,10 @@ function init() {
 
             targetElement.style.background = "";
             targetElement.style.transition = "";
+            event.target.style.height = "";
+            event.target.style.borderRadius = "";
+            event.target.style.marginTop = ""
+            event.target.style.marginBottom = "";
         }
     }, false);
 

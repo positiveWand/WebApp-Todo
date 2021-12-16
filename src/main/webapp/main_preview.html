@@ -1,0 +1,146 @@
+<html>
+<head>
+    <title>Todo List</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<header>
+    <h1>Todo list : test_table</h1>
+    <nav>
+        <button>새로운 Todo 추가</button>
+    </nav>
+</header>
+<div id="container-top">
+    <div id="todo" class="section-container">
+        <div class="section-title">
+            <h2>TODO</h2>
+        </div>
+        <div class="section-list">
+            <ul>
+
+                <li class="todo_item_blank"></li>
+                <li>
+                    <div class="todo_item">
+                        <h3>
+                            자바스크립트 공부하기
+                        </h3>
+                        <p>
+                            2021-12-12
+                        </p>
+                    </div>
+                </li>
+                <li class="todo_item_blank"></li>
+                <li>
+                    <div class="todo_item">
+                        <h3>
+                            리포트 제출하기
+                        </h3>
+                        <p>
+                            2021-12-12
+                        </p>
+                    </div>
+                </li>
+                <li class="todo_item_blank last_blank"></li>
+
+            </ul>
+        </div>
+    </div>
+    <div id="doing" class="section-container">
+        <div class="section-title">
+            <h2>DOING</h2>
+        </div>
+        <div class="section-list">
+            <ul>
+
+                <li class="todo_item_blank"></li>
+                <li>
+                    <div class="todo_item">
+                        <h3>
+                            다음달 계획서 작성방법 고민하기
+                        </h3>
+                        <p>
+                            2021-12-12
+                        </p>
+                    </div>
+                </li>
+                <li class="todo_item_blank"></li>
+                <li>
+                    <div class="todo_item">
+                        <h3>
+                            데모페이지 개발
+                        </h3>
+                        <p>
+                            2021-12-12
+                        </p>
+                    </div>
+                </li>
+                <li class="todo_item_blank"></li>
+                <li>
+                    <div class="todo_item">
+                        <h3>
+                            웹 관련 책 찾아보기
+                        </h3>
+                        <p>
+                            2021-12-12
+                        </p>
+                    </div>
+                </li>
+                <li class="todo_item_blank last_blank"></li>
+
+            </ul>
+        </div>
+    </div>
+    <div id="done" class="section-container">
+        <div class="section-title">
+            <h2>DONE</h2>
+        </div>
+        <div class="section-list">
+            <ul>
+                <li class="todo_item_blank"></li>
+                <li>
+                    <div class="todo_item">
+                        <h3>
+                            CSS 학습
+                        </h3>
+                        <p>
+                            2021-12-12
+                        </p>
+                    </div>
+                </li>
+                <li class="todo_item_blank"></li>
+                <li>
+                    <div class="todo_item">
+                        <h3>
+                            객체지향설계 개념 복습
+                        </h3>
+                        <p>
+                            2021-12-12
+                        </p>
+                    </div>
+                </li>
+                <li class="todo_item_blank last_blank"></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+</body>
+<div id="overlay-container">
+    <div id="shade_box"></div>
+    <div id="form-container">
+        <div>
+            <h3>새로운 Todo 추가하기</h3>
+            <form action="post">
+                <label for="title">Title : </label>
+                <input type="text">
+                <br>
+                <label for="description">Description : </label>
+                <input type="text">
+                <br>
+                <input type="submit" id="submit-button">
+            </form>
+        </div>
+    </div>
+</div>
+<script src="./script.js"></script>
+</html>
