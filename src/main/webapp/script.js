@@ -1,4 +1,5 @@
 function init() {
+    // Item 드래그 앤 드롭 기능
     let dragged;
 
     let container = document.getElementById("container-top");
@@ -71,6 +72,22 @@ function init() {
     for(let i = 0; i < items.length; i++) {
         items[i].parentNode.setAttribute("draggable", "true");
     }
+
+
+    // "Item 추가 양식" 진입, 탈출 기능
+    let addFormButton = document.getElementById("addFormAppearButton");
+    let overlayContainer = document.getElementById("overlay-container");
+
+    addFormButton.addEventListener("click", function(event) {
+        overlayContainer.style.visibility = "visible";
+    }, false);
+
+    document.addEventListener("keydown", function(event) {
+        if(event.key == "Escape") {
+            overlayContainer.style.visibility = "hidden";
+        }
+    });
+
 }
 
 init();
