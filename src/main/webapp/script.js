@@ -1,31 +1,72 @@
 function init() {
     // Item 드래그 앤 드롭 기능
     let dragged;
+    let draggedItemID;
 
     let container = document.getElementById("container-top");
 
     container.addEventListener("drag", function(event) {}, false);
     container.addEventListener("dragstart", function(event) {
         dragged = event.target;
-        event.target.style.opacity = 1;
+        let draggedItem = dragged.firstChild;
+        while(draggedItem.className != "todo_item") {
+            draggedItem = draggedItem.nextSibling;
+        }
+        draggedItemID = draggedItem.id;
     }, false);
     container.addEventListener("dragend", function(event) {
         event.target.style.opacity = "";
     }, false);
     container.addEventListener("dragover", function(event) {
         event.preventDefault();
+        if(event.target.className != "todo_item_blank" && event.target.className != "todo_item_blank last_blank") {
+            let blankList = document.getElementsByClassName("todo_item_blank");
+            for(let i = 0; i < blankList.length; i++) {
+                blankList[i].style.background = "";
+                blankList[i].style.transition = "";
+                blankList[i].style.height = "";
+                blankList[i].style.borderRadius = "";
+                blankList[i].style.marginTop = ""
+                blankList[i].style.marginBottom = "";
+            }
+        }
     }, false);
 
     container.addEventListener("dragenter", function(event) {
         //console.log(event.target.className);
-        if(event.target.className == "todo_item_blank" || event.target.className == "todo_item_blank last_blank") {
-            event.dataTransfer.dropEffect = "copy";
+        if((event.target.className == "todo_item" || event.target.className == "todo_item_blank last_blank") && event.target.id != draggedItemID) {
+            if(event.target.className == "todo_item_blank last_blank") {
+                event.target.style.backgroundColor = "powderblue";
+                event.target.style.transition = "background-color .35s";
+                event.target.style.height = "6.5rem";
+                event.target.style.borderRadius = "1rem";
+                event.target.style.marginTop = "0.75rem"
+                event.target.style.marginBottom = "0.75rem";
+
+            } else {
+                let targetPreviousBlank = event.target.parentNode;
+                while(targetPreviousBlank.className != "todo_item_blank") {
+                    targetPreviousBlank = targetPreviousBlank.previousSibling;
+                }
+
+                targetPreviousBlank.style.backgroundColor = "powderblue";
+                targetPreviousBlank.style.transition = "background-color .35s";
+                targetPreviousBlank.style.height = "6.5rem";
+                targetPreviousBlank.style.borderRadius = "1rem";
+                targetPreviousBlank.style.marginTop = "0.75rem"
+                targetPreviousBlank.style.marginBottom = "0.75rem";
+            }
+            
+            
+           /*
             event.target.style.backgroundColor = "powderblue";
             event.target.style.transition = "background-color .35s";
             event.target.style.height = "6.5rem";
             event.target.style.borderRadius = "1rem";
             event.target.style.marginTop = "0.75rem"
             event.target.style.marginBottom = "0.75rem";
+            */
+            
         }
     }, false);
     container.addEventListener("dragleave", function(event) {
@@ -92,7 +133,7 @@ function init() {
     }, false);
 
     for(let i = 0; i < items.length; i++) {
-        items[i].addEventListener("click", function(event) {
+        items[i].parentNode.addEventListener("click", function(event) {
             popupAppear(overlayContainer, "Todo 수정하기", "수정하기");
             document.getElementById("create_time").disabled = true;
         }, false);
