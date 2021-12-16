@@ -134,13 +134,27 @@
         <div>
             <h3>새로운 Todo 추가하기</h3>
             <form action="post">
-                <label for="title">Title : </label>
-                <input type="text">
-                <br>
-                <label for="description">Description : </label>
-                <input type="text">
-                <br>
-                <input type="submit" id="submit-button">
+                <div>
+                    <label for="title">제목</label>
+                    <input type="text" id="title" class="form-input">
+                </div>
+                <div>
+                    <label for="create_time">생성 시간</label>
+                    <input type="datetime-local" id="create_time" class="form-input">
+                </div>
+                <div>
+                    <label for="status">상태</label>
+                    <select name="status" id="status" class="form-input">
+                        <option value="todo">TODO</option>
+                        <option value="doing">DOING</option>
+                        <option value="done">DONE</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="description">내용</label>
+                    <div id="description" class="form-input" contenteditable="true"></div>
+                </div>
+                <input type="submit" id="submit" class="form-input">
             </form>
         </div>
     </div>
