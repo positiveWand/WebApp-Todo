@@ -1,0 +1,66 @@
+body {
+    margin: 0;
+}
+
+header {
+    border-bottom-style: solid;
+    display: flex;
+    justify-content: space-between;
+}
+
+header > h1 {
+    margin: 1rem;
+}
+
+header > nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 13rem;
+}
+
+header > nav > button {
+    width: 10rem;
+    height: 3rem;
+}
+
+footer {
+    height: 100px;
+}
+
+.container {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+
+    border-bottom: solid;
+    min-height: 80%;
+}
+
+.section-container {
+    border-style: solid;
+    padding: 1rem;
+    margin: 1rem;
+    width: 30%;
+
+    border-radius: 2rem;
+
+    flex-basis: 500px;
+    flex-shrink: 1;
+}
+
+.section-list > ul {
+    list-style: none;
+    padding-left: 0;
+
+}
+
+.todo_item, .doing_item, .done_item {
+    border-style: solid;
+    border-radius: 1rem;
+    margin-bottom: 1rem;
+    padding-left: 1rem;
+}
