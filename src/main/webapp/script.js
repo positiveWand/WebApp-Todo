@@ -74,24 +74,44 @@ function init() {
     }
 
 
-    // "Item 추가 양식" 진입, 탈출 기능
+    // "Item 팝업창" 진입, 탈출 기능
     let addFormButton = document.getElementById("addFormAppearButton");
     let closeFormButton = document.getElementById("addFormCloseButton");
     let overlayContainer = document.getElementById("overlay-container");
+    let shadeBox = document.getElementById("shade_box");
 
+    // "Item 팝업창" 진입
     addFormButton.addEventListener("click", function(event) {
-        overlayContainer.style.visibility = "visible";
+        popupAppear(overlayContainer, "새로운 Todo 추가하기", "추가하기");
     }, false);
     closeFormButton.addEventListener("click", function(event) {
-        overlayContainer.style.visibility = "hidden";
+        popupDisapppear(overlayContainer);
     }, false);
 
+    for(let i = 0; i < items.length; i++) {
+        items[i].addEventListener("click", function(event) {
+            popupAppear(overlayContainer, "Todo 수정하기", "수정하기");
+        }, false);
+    }
+
+    // "Item 팝업창" 탈출
+    shadeBox.addEventListener("click", function(event) {
+        popupDisapppear(overlayContainer);
+    }, false);
     document.addEventListener("keydown", function(event) {
         if(event.key == "Escape") {
-            overlayContainer.style.visibility = "hidden";
+            popupDisapppear(overlayContainer);
         }
     });
+}
 
+function popupAppear(popupElement, popupTitle, popupSubmit) {
+    document.getElementById("popupTitle").innerHTML = popupTitle;
+    document.getElementById("submit").setAttribute("value", popupSubmit);
+    popupElement.style.visibility = "visible";
+}
+function popupDisapppear(popupElement) {
+    popupElement.style.visibility = "hidden";
 }
 
 init();
