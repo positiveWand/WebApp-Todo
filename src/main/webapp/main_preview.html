@@ -7,7 +7,7 @@
 <header>
     <h1>Todo list : test_table</h1>
     <nav>
-        <button id="addFormAppearButton">새로운 Todo 추가</button>
+        <button id="addFormAppearButton">Todo item 추가하기</button>
     </nav>
 </header>
 <div id="container-top">
@@ -132,7 +132,7 @@
             <img id="addFormCloseButton" src="./close.png" alt="Close">
         </div>
         <div>
-            <h3 id="popupTitle">새로운 Todo 추가하기</h3>
+            <h3 id="popupTitle">Todo 추가하기</h3>
             <form action="post">
                 <div>
                     <label for="title">제목</label>
@@ -140,7 +140,7 @@
                 </div>
                 <div>
                     <label for="create_time">생성 시간</label>
-                    <input type="datetime-local" id="create_time" class="form-input">
+                    <input type="datetime-local" id="create_time" class="form-input" disabled>
                 </div>
                 <div>
                     <label for="status">상태</label>

@@ -82,7 +82,10 @@ function init() {
 
     // "Item 팝업창" 진입
     addFormButton.addEventListener("click", function(event) {
-        popupAppear(overlayContainer, "새로운 Todo 추가하기", "추가하기");
+        popupAppear(overlayContainer, "Todo 추가하기", "추가하기");
+        document.getElementById("create_time").parentElement.style.display = "none";
+        document.getElementById("status").setAttribute("value", "TODO");
+        document.getElementById("status").disabled = true;
     }, false);
     closeFormButton.addEventListener("click", function(event) {
         popupDisapppear(overlayContainer);
@@ -91,6 +94,7 @@ function init() {
     for(let i = 0; i < items.length; i++) {
         items[i].addEventListener("click", function(event) {
             popupAppear(overlayContainer, "Todo 수정하기", "수정하기");
+            document.getElementById("create_time").disabled = true;
         }, false);
     }
 
@@ -112,6 +116,10 @@ function popupAppear(popupElement, popupTitle, popupSubmit) {
 }
 function popupDisapppear(popupElement) {
     popupElement.style.visibility = "hidden";
+
+    document.getElementById("create_time").parentElement.style.display = "";
+    document.getElementById("status").setAttribute("value", "TODO");
+    document.getElementById("status").disabled = false;
 }
 
 init();
