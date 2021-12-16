@@ -76,10 +76,14 @@ function init() {
 
     // "Item 추가 양식" 진입, 탈출 기능
     let addFormButton = document.getElementById("addFormAppearButton");
+    let closeFormButton = document.getElementById("addFormCloseButton");
     let overlayContainer = document.getElementById("overlay-container");
 
     addFormButton.addEventListener("click", function(event) {
         overlayContainer.style.visibility = "visible";
+    }, false);
+    closeFormButton.addEventListener("click", function(event) {
+        overlayContainer.style.visibility = "hidden";
     }, false);
 
     document.addEventListener("keydown", function(event) {
