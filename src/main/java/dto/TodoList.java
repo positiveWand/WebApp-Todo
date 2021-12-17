@@ -1,7 +1,5 @@
 package dto;
 
-import dto.TodoItem;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,5 +26,17 @@ public class TodoList {
         return "dto.TodoList{" +
                 "itemList=" + itemList +
                 '}';
+    }
+
+    public String toJson() {
+        String listJson = "";
+        listJson += "[";
+        for(int i = 0; i < itemList.size(); i++) {
+            listJson += itemList.get(i).toJson();
+            if(i != itemList.size() - 1)
+                listJson += ", ";
+        }
+        listJson += "]";
+        return listJson;
     }
 }

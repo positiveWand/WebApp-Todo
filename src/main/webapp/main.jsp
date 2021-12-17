@@ -39,7 +39,7 @@
                                 <%= todo.get(i).getTitle() %>
                             </h3>
                             <p>
-                                <%= todo.get(i).getCreateDate() %>
+                                <%= todo.get(i).getCreateTime() %>
                             </p>
                         </div>
                     </li>
@@ -67,7 +67,7 @@
                                 <%= doing.get(i).getTitle() %>
                             </h3>
                             <p>
-                                <%= doing.get(i).getCreateDate() %>
+                                <%= doing.get(i).getCreateTime() %>
                             </p>
                         </div>
                     </li>
@@ -95,7 +95,7 @@
                                 <%= done.get(i).getTitle() %>
                             </h3>
                             <p>
-                                <%= done.get(i).getCreateDate() %>
+                                <%= done.get(i).getCreateTime() %>
                             </p>
                         </div>
                     </li>

@@ -1,4 +1,12 @@
+let todoTable = Object();
+let tableReady = false;
+
 function init() {
+    getTable().then(data => {
+        todoTable = data;
+        tableReady = true;
+    });
+
     // Item 드래그 앤 드롭 기능
     let dragged;
     let draggedItemID;
@@ -148,6 +156,47 @@ function init() {
             popupDisapppear(overlayContainer);
         }
     });
+
+
+    // 팝업창 버튼 클릭 시
+    let submitButton = document.getElementById("submit");
+
+    submitButton.addEventListener("click", function(event) {
+        // 양식 검사
+        let pf = checkForm();
+
+        if(pf && tableReady) { // 검사 통과 시
+            if(document.getElementById("popupTitle").innerHTML == "Todo 추가하기") {
+                // 새로운 item 추가
+                let newItem = Object();
+
+
+                addItem();
+                updateTable();
+            } else {
+                // 기존 item 수정
+            }
+
+            updateTable();
+        } else if(!pf) { // 검사 탈락 시
+            window.alert("제목은 반드시 있어야합니다!");
+        } else {
+            window.alert("로딩 중입니다.");
+        }
+    });
+}
+
+async function getTable() {
+    let theResponse = await fetch("http://localhost:8080/getTable", {method : "POST"});
+    let theObject = await theResponse.json();
+
+    return theObject;
+}
+function addItem(listKind, newItem) {
+    // 데이터 갱신
+
+    // View에 추가
+
 }
 
 function popupAppear(popupElement, popupTitle, popupSubmit) {
@@ -161,6 +210,17 @@ function popupDisapppear(popupElement) {
     document.getElementById("create_time").parentElement.style.display = "";
     document.getElementById("status").setAttribute("value", "TODO");
     document.getElementById("status").disabled = false;
+}
+
+function updateTable() {
+    // 데이터 서버에 전송
+
+    // 화면 전환
+    popupDisapppear();
+}
+
+function checkForm() {
+    return true;
 }
 
 init();

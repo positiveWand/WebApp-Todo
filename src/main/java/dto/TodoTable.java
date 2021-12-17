@@ -61,4 +61,12 @@ public class TodoTable {
                 ", _done=" + done +
                 '}';
     }
+
+    public String toJson() {
+        return "{ "+'"'+"name"+'"'+" : "+'"'+ this.name + '"' + ", " +
+                '"'+"todo"+'"'+" : " + this.todo.toJson() + ", " +
+                '"'+"doing"+'"'+" : " + this.doing.toJson() + ", " +
+                '"'+"done"+'"'+" : " + this.done.toJson() +
+                "}";
+    }
 }

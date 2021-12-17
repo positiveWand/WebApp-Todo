@@ -32,9 +32,9 @@ public class TodoDao {
                     String description = rs.getString(3);
                     String status = rs.getString(4);
                     int sequence = rs.getInt(5);
-                    Date createDate = rs.getDate(6);
+                    Timestamp createTime = rs.getTimestamp(6);
 
-                    TodoItem item = new TodoItem(id, title, description, createDate);
+                    TodoItem item = new TodoItem(id, title, description, createTime);
 
                     switch (status) {
                         case "todo":
