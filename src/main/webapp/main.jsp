@@ -34,7 +34,7 @@
                     %>
                     <li class="todo_item_blank"></li>
                     <li>
-                        <div class="todo_item" id=<%= "item-"+todo.get(i).id>>
+                        <div class="todo_item" id=<%= "item-"+todo.get(i).id%>>
                             <h3>
                                 <%= todo.get(i).getTitle() %>
                             </h3>
@@ -62,7 +62,7 @@
                     %>
                     <li class="todo_item_blank"></li>
                     <li>
-                        <div class="todo_item" id=<%= "item-"+doing.get(i).id>>
+                        <div class="todo_item" id=<%= "item-"+doing.get(i).id%>>
                             <h3>
                                 <%= doing.get(i).getTitle() %>
                             </h3>
@@ -90,7 +90,7 @@
                     %>
                     <li class="todo_item_blank"></li>
                     <li>
-                        <div class="todo_item" id=<%= "item-"+done.get(i).id>>
+                        <div class="todo_item" id=<%= "item-"+done.get(i).id%>>
                             <h3>
                                 <%= done.get(i).getTitle() %>
                             </h3>
