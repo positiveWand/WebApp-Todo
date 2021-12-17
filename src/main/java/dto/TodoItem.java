@@ -3,21 +3,27 @@ package dto;
 import java.util.Date;
 
 public class TodoItem {
+    private int id;
     private String title;
     private String description;
     private Date createDate;
 
     public TodoItem() {
+        this.id = -1;
         this.title = "default name";
         this.description = "default description";
         this.createDate = new Date();
     }
-    public TodoItem(String _title, String _description, Date _createDate) {
+    public TodoItem(int _id, String _title, String _description, Date _createDate) {
+        this.id = _id;
         this.title = _title;
         this.description = _description;
         this.createDate = _createDate;
     }
 
+    public int getId() {
+        return id;
+    }
     public String getTitle() {
         return title;
     }
@@ -28,6 +34,9 @@ public class TodoItem {
         return createDate;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
     public void setTitle(String title) {
         this.title = title;
     }

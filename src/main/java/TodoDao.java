@@ -27,13 +27,14 @@ public class TodoDao {
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    String title = rs.getString(1);
-                    String description = rs.getString(2);
-                    String status = rs.getString(3);
-                    int sequence = rs.getInt("sequence");
-                    Date createDate = rs.getDate(5);
+                    int id = rs.getInt(1);
+                    String title = rs.getString(2);
+                    String description = rs.getString(3);
+                    String status = rs.getString(4);
+                    int sequence = rs.getInt(5);
+                    Date createDate = rs.getDate(6);
 
-                    TodoItem item = new TodoItem(title, description, createDate);
+                    TodoItem item = new TodoItem(id, title, description, createDate);
 
                     switch (status) {
                         case "todo":

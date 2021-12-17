@@ -31,7 +31,7 @@ public class MainServlet extends HttpServlet {
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         TodoDao dao = new TodoDao();
-        TodoTable theTable = dao.getTable("test_table");
+        TodoTable theTable = dao.getTable("todo");
         System.out.println(theTable);
         //System.out.println("한글이 왜 안될까요? 우리나라말이 이런 취급을 받는다니 너무 슬프네요 ㅠ");
 
