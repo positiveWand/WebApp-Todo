@@ -12,7 +12,7 @@
 <html>
 <head>
     <title>ToDo List</title>
-    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
     <header>
@@ -21,7 +21,7 @@
             <button id="addFormAppearButton">Todo item 추가하기</button>
         </nav>
     </header>
-    <div class="container-top">
+    <div id="container-top">
         <div id="todo" class="section-container">
             <div class="section-title">
                 <h2>TODO</h2>
@@ -34,7 +34,7 @@
                     %>
                     <li class="todo_item_blank"></li>
                     <li>
-                        <div class="todo_item" id=<%= "item-"+todo.get(i).id%>>
+                        <div class="todo_item" id=<%= "item-"+todo.get(i).getId() %>>
                             <h3>
                                 <%= todo.get(i).getTitle() %>
                             </h3>
@@ -62,7 +62,7 @@
                     %>
                     <li class="todo_item_blank"></li>
                     <li>
-                        <div class="todo_item" id=<%= "item-"+doing.get(i).id%>>
+                        <div class="todo_item" id=<%= "item-"+doing.get(i).getId() %>>
                             <h3>
                                 <%= doing.get(i).getTitle() %>
                             </h3>
@@ -90,7 +90,7 @@
                     %>
                     <li class="todo_item_blank"></li>
                     <li>
-                        <div class="todo_item" id=<%= "item-"+done.get(i).id%>>
+                        <div class="todo_item" id=<%= "item-"+done.get(i).getId() %>>
                             <h3>
                                 <%= done.get(i).getTitle() %>
                             </h3>
@@ -107,8 +107,40 @@
             </div>
         </div>
     </div>
-    <footer>
-        FOOTER
-    </footer>
 </body>
+<div id="overlay-container">
+    <div id="shade_box"></div>
+    <div id="form-container">
+        <div id="form-controlbar">
+            <img id="addFormCloseButton" src="../resources/close.png" alt="Close">
+        </div>
+        <div>
+            <h3 id="popupTitle">Todo 추가하기</h3>
+            <form action="http://localhost:8080/main" method="post">
+                <div>
+                    <label for="title">제목</label>
+                    <input type="text" id="title" class="form-input">
+                </div>
+                <div>
+                    <label for="create_time">생성 시간</label>
+                    <input type="datetime-local" id="create_time" class="form-input" disabled>
+                </div>
+                <div>
+                    <label for="status">상태</label>
+                    <select name="status" id="status" class="form-input">
+                        <option value="todo">TODO</option>
+                        <option value="doing">DOING</option>
+                        <option value="done">DONE</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="description">내용</label>
+                    <div id="description" class="form-input" contenteditable="true"></div>
+                </div>
+                <input type="submit" id="submit" class="form-input">
+            </form>
+        </div>
+    </div>
+</div>
+<script src="./js/script.js"></script>
 </html>
