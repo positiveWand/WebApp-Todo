@@ -27,7 +27,7 @@
                 <h2>TODO</h2>
             </div>
             <div class="section-list">
-                <ul>
+                <ul id="todo_list">
                     <%
                         List<TodoItem> todo = (List<TodoItem>) request.getAttribute("todo");
                         for(int i = 0; i < todo.size(); i++) {
@@ -55,7 +55,7 @@
                 <h2>DOING</h2>
             </div>
             <div class="section-list">
-                <ul>
+                <ul id="doing_list">
                     <%
                         List<TodoItem> doing = (List<TodoItem>) request.getAttribute("doing");
                         for(int i = 0; i < doing.size(); i++) {
@@ -83,7 +83,7 @@
                 <h2>DONE</h2>
             </div>
             <div class="section-list">
-                <ul>
+                <ul id="done_list">
                     <%
                         List<TodoItem> done = (List<TodoItem>) request.getAttribute("done");
                         for(int i = 0; i < done.size(); i++) {

@@ -1,10 +1,12 @@
 let todoTable = Object();
 let tableReady = false;
+let maxID = 1000;
 
 function init() {
     getTable().then(data => {
         todoTable = data;
         tableReady = true;
+        maxID = getMaxID(todoTable);
     });
 
     // Item 드래그 앤 드롭 기능
@@ -131,10 +133,11 @@ function init() {
 
     // "Item 팝업창" 진입
     addFormButton.addEventListener("click", function(event) {
-        popupAppear(overlayContainer, "Todo 추가하기", "추가하기");
+        setPopup("", "", "TODO", "");
         document.getElementById("create_time").parentElement.style.display = "none";
-        document.getElementById("status").setAttribute("value", "TODO");
+        document.getElementById("status").options[0].selected = true;
         document.getElementById("status").disabled = true;
+        popupAppear(overlayContainer, "Todo 추가하기", "추가하기");
     }, false);
     closeFormButton.addEventListener("click", function(event) {
         popupDisapppear(overlayContainer);
@@ -144,6 +147,10 @@ function init() {
         items[i].parentNode.addEventListener("click", function(event) {
             popupAppear(overlayContainer, "Todo 수정하기", "수정하기");
             document.getElementById("create_time").disabled = true;
+            let itemID = Number(items[i].id.replace("item-", ""));
+            let itemStatus = findItem(itemID)[0];
+            let clickedItem = findItem(itemID)[1];
+            setPopup(clickedItem.title, clickedItem.createTime, itemStatus, clickedItem.description);
         }, false);
     }
 
@@ -168,16 +175,18 @@ function init() {
         if(pf && tableReady) { // 검사 통과 시
             if(document.getElementById("popupTitle").innerHTML == "Todo 추가하기") {
                 // 새로운 item 추가
-                let newItem = Object();
-
-
-                addItem();
+                let newItem = {
+                    id : maxID + 1,
+                    title : document.getElementById("title").value,
+                    description : document.getElementById("description").value,
+                    create_time : modifyTimeA(document.getElementById("time").value),
+                };
+                addItem("todo", newItem);
                 updateTable();
             } else {
                 // 기존 item 수정
-            }
 
-            updateTable();
+            }
         } else if(!pf) { // 검사 탈락 시
             window.alert("제목은 반드시 있어야합니다!");
         } else {
@@ -192,16 +201,44 @@ async function getTable() {
 
     return theObject;
 }
-function addItem(listKind, newItem) {
+function addItem(listType, newItem) {
     // 데이터 갱신
+    if(listType == "todo") {
+        todoTable.todo.push(newItem);
+    } else if(listType == "doing") {
+        todoTable.doing.push(newItem);
+    } else if(listType == "done") {
+        todoTable.done.push(newItem);
+    } else {
 
+    }
     // View에 추가
+    let newListElement = document.createElement("li");
+    let newDiv = document.createElement("div");
+    let newTitleNode = document.createElement("h3");
+    let newTitleText = document.createTextNode(newItem.title);
+    let newDateNode = document.createElement("p");
+    let newDateText = document.createTextNode(newItem.create_date);
+
+    newDiv.className = "todo_item";
+    newDiv.id = "item" + newItem.id;
+
+    newDateNode.appendChild(newDateText);
+    newTitleNode.appendChild(newTitleText);
+    newDiv.appendChild(newTitleNode);
+    newDiv.appendChild(newDateNode);
+    newListElement.appendChild(newDiv);
+
+    document.querySelector("ul#todo_list").insertBefore(newListElement, document.querySelector("ul#todo_list>.last_blank"));
 
 }
 
 function popupAppear(popupElement, popupTitle, popupSubmit) {
     document.getElementById("popupTitle").innerHTML = popupTitle;
     document.getElementById("submit").setAttribute("value", popupSubmit);
+
+
+
     popupElement.style.visibility = "visible";
 }
 function popupDisapppear(popupElement) {
@@ -211,16 +248,94 @@ function popupDisapppear(popupElement) {
     document.getElementById("status").setAttribute("value", "TODO");
     document.getElementById("status").disabled = false;
 }
+function setPopup(title, create_time, status, description) {
+    document.getElementById("title").value = title;
+    document.getElementById("create_time").value = modifyTimeB(create_time);
+    switch (status) {
+        case "todo":
+            document.getElementById("status").options[0].selected = true;
+            break;
+        case "doing":
+            document.getElementById("status").options[1].selected = true;
+            break;
+        case "done":
+            document.getElementById("status").options[2].selected = true;
+            break;
+        default:
+            break;
+    }
+    document.getElementById("description").innerHTML = description;
+}
 
 function updateTable() {
     // 데이터 서버에 전송
-
+    
     // 화면 전환
     popupDisapppear();
 }
 
 function checkForm() {
+    if(document.getElementById("title").value == "") {
+        return false;
+    }
     return true;
+}
+
+function getMaxID(tableObject) {
+    let maxNum = 0;
+
+    for(let i = 0; i < tableObject.todo.length; i++) {
+        if(tableObject.todo[i].id > maxNum) {
+            maxNum = tableObject.todo[i].id
+        }
+    }
+    for(let i = 0; i < tableObject.doing.length; i++) {
+        if(tableObject.doing[i].id > maxNum) {
+            maxNum = tableObject.doing[i].id
+        }
+    }
+    for(let i = 0; i < tableObject.done.length; i++) {
+        if(tableObject.done[i].id > maxNum) {
+            maxNum = tableObject.done[i].id
+        }
+    }
+
+    return maxNum;
+}
+function modifyTimeA(timeString) {
+    let newTimeString = timeString;
+
+    newTimeString = newTimeString.replace("T", " ") + ":00.0";
+
+    return newTimeString;
+}
+function modifyTimeB(timeString) {
+    let newTimeString = timeString;
+
+    newTimeString = newTimeString.slice(0, 10) + "T" + newTimeString.slice(11, 16);
+
+    return newTimeString;
+}
+
+function findItem(targetID) {
+    let tableObject = todoTable;
+    let targetItem = null;
+
+    for(let i = 0; i < tableObject.todo.length; i++) {
+        if(tableObject.todo[i].id == targetID) {
+            return ["todo", tableObject.todo[i]];
+        }
+    }
+    for(let i = 0; i < tableObject.doing.length; i++) {
+        if(tableObject.doing[i].id == targetID) {
+            return ["doing", tableObject.doing[i]];
+        }
+    }
+    for(let i = 0; i < tableObject.done.length; i++) {
+        if(tableObject.done[i].id == targetID) {
+            return ["done", tableObject.done[i]];
+        }
+    }
 }
 
 init();
