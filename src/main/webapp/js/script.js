@@ -1,6 +1,9 @@
 let todoTable = Object();
 let tableReady = false;
 let maxID = 1000;
+let selectedItem = Object();
+let selectedItemIndex = 0;
+let selectedItemStatus = "NOT-READY";
 
 function init() {
     getTable().then(data => {
@@ -23,6 +26,12 @@ function init() {
             draggedItem = draggedItem.nextSibling;
         }
         draggedItemID = draggedItem.id;
+
+
+        let selectedInfo = findItem(Number(draggedItemID.replace("item-", "")));
+        selectedItemStatus = selectedInfo[0];
+        selectedItem = selectedInfo[1];
+        selectedItemIndex = selectedInfo[2];
     }, false);
     container.addEventListener("dragend", function(event) {
         event.target.style.opacity = "";
@@ -93,7 +102,7 @@ function init() {
         event.preventDefault();
         if(event.target.className == "todo_item_blank" || event.target.className == "todo_item_blank last_blank") {
             //event.target.style.background = "black";
-
+            /*
             let targetElement = event.target;
             let newBlankElement = document.createElement("li");
             newBlankElement.setAttribute("class", "todo_item_blank");
@@ -114,6 +123,35 @@ function init() {
             event.target.style.borderRadius = "";
             event.target.style.marginTop = ""
             event.target.style.marginBottom = "";
+            */
+
+            let targetColoredBlank = event.target;
+            if(targetColoredBlank.className = "todo_item_blank last_blank") {
+                let listType = targetColoredBlank.parentElement.id.replace("_list", "");
+                todoTable[selectedItemStatus].splice(selectedItemIndex, 1)
+                addItem(listType, selectedItem);
+            } else {
+                let nextItem = targetColoredBlank;
+                while(nextItem.tagName != "li" || nextItem.className == "todo_item_blank") {
+                    nextItem = nextItem.nextSibling;
+                }
+
+                let children = nextItem.childNodes;
+                let targetItem;
+                for(let i = 0; i < children.length; i++) {
+                    targetItem = children[i];
+                    if(targetItem.tagName == "div") {
+                        break;
+                    }
+                }
+                let targetItemIndex = Number(targetItem.id.replace("item-", ""));
+                let targetItemInfo = findItem(targetItemIndex);
+                let movedItem = todoTable[selectedItemStatus].splice(selectedItemIndex, 1);
+                todoTable[targetItemInfo[0]].splice(targetItemInfo[2], 0, movedItem);
+                
+            }
+
+            updateTable();
         }
     }, false);
 
@@ -148,9 +186,14 @@ function init() {
             popupAppear(overlayContainer, "Todo 수정하기", "수정하기");
             document.getElementById("create_time").disabled = true;
             let itemID = Number(items[i].id.replace("item-", ""));
-            let itemStatus = findItem(itemID)[0];
-            let clickedItem = findItem(itemID)[1];
-            setPopup(clickedItem.title, clickedItem.createTime, itemStatus, clickedItem.description);
+            let searchResult = findItem(itemID);
+            let clickedItemStatus = searchResult[0];
+            let clickedItem = searchResult[1];
+            let clickedItemIndex = searchResult[2];
+            setPopup(clickedItem.title, clickedItem.createTime, clickedItemStatus, clickedItem.description);
+            selectedItem = clickedItem;
+            selectedItemIndex = clickedItemIndex;
+            selectedItemStatus = clickedItemStatus;
         }, false);
     }
 
@@ -165,7 +208,7 @@ function init() {
     });
 
 
-    // 팝업창 버튼 클릭 시
+    // 팝업창 위의 "submit" 버튼 클릭 시
     let submitButton = document.getElementById("submit");
 
     submitButton.addEventListener("click", function(event) {
@@ -175,17 +218,32 @@ function init() {
         if(pf && tableReady) { // 검사 통과 시
             if(document.getElementById("popupTitle").innerHTML == "Todo 추가하기") {
                 // 새로운 item 추가
+                let today = new Date();
+                let date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+                let time = today.getHours() + ":" + today.getMinutes();
+                let dateTime = date+'T'+time;
+                document.getElementById("create_time").value = dateTime;
+
                 let newItem = {
                     id : maxID + 1,
                     title : document.getElementById("title").value,
-                    description : document.getElementById("description").value,
-                    create_time : modifyTimeA(document.getElementById("time").value),
+                    description : document.getElementById("description").innerHTML,
+                    createTime : modifyTimeA(document.getElementById("create_time").value)
                 };
                 addItem("todo", newItem);
                 updateTable();
             } else {
                 // 기존 item 수정
+                let form = getPopup();
+                selectedItem["title"] = form["title"];
+                selectedItem["description"] = form["description"];
+                selectedItem["createTime"] = modifyTimeA(form["createTime"]);
+                if(selectedItemStatus != form["status"]) {
+                    let poppedItem = todoTable[selectedItemStatus].splice(selectedItemIndex, 1)[0];
+                    addItem(form["status"], poppedItem);
+                }
 
+                updateTable();
             }
         } else if(!pf) { // 검사 탈락 시
             window.alert("제목은 반드시 있어야합니다!");
@@ -212,32 +270,11 @@ function addItem(listType, newItem) {
     } else {
 
     }
-    // View에 추가
-    let newListElement = document.createElement("li");
-    let newDiv = document.createElement("div");
-    let newTitleNode = document.createElement("h3");
-    let newTitleText = document.createTextNode(newItem.title);
-    let newDateNode = document.createElement("p");
-    let newDateText = document.createTextNode(newItem.create_date);
-
-    newDiv.className = "todo_item";
-    newDiv.id = "item" + newItem.id;
-
-    newDateNode.appendChild(newDateText);
-    newTitleNode.appendChild(newTitleText);
-    newDiv.appendChild(newTitleNode);
-    newDiv.appendChild(newDateNode);
-    newListElement.appendChild(newDiv);
-
-    document.querySelector("ul#todo_list").insertBefore(newListElement, document.querySelector("ul#todo_list>.last_blank"));
-
 }
 
 function popupAppear(popupElement, popupTitle, popupSubmit) {
     document.getElementById("popupTitle").innerHTML = popupTitle;
-    document.getElementById("submit").setAttribute("value", popupSubmit);
-
-
+    document.getElementById("submit").innerHTML = popupSubmit;
 
     popupElement.style.visibility = "visible";
 }
@@ -247,6 +284,15 @@ function popupDisapppear(popupElement) {
     document.getElementById("create_time").parentElement.style.display = "";
     document.getElementById("status").setAttribute("value", "TODO");
     document.getElementById("status").disabled = false;
+}
+function getPopup() {
+    let theForm = Object();
+    theForm["title"] = document.getElementById("title").value;
+    theForm["createTime"] = document.getElementById("create_time").value;
+    theForm["status"] = document.getElementById("status").value;
+    theForm["description"] = document.getElementById("description").innerHTML;
+
+    return theForm;
 }
 function setPopup(title, create_time, status, description) {
     document.getElementById("title").value = title;
@@ -270,8 +316,81 @@ function setPopup(title, create_time, status, description) {
 function updateTable() {
     // 데이터 서버에 전송
     
+
     // 화면 전환
-    popupDisapppear();
+    let listType = ["todo", "doing", "done"];
+    for(let i = 0; i < 3; i++) {
+        removeChildren(document.querySelector("ul"+"#"+listType[i]+"_list"));
+        reloadList(document.querySelector("ul"+"#"+listType[i]+"_list"), todoTable[listType[i]]);
+    }
+
+    let items = document.getElementsByClassName("todo_item");
+
+    for(let i = 0; i < items.length; i++) {
+        items[i].parentNode.setAttribute("draggable", "true");
+    }
+
+    let overlayContainer = document.getElementById("overlay-container");
+
+    for(let i = 0; i < items.length; i++) {
+        items[i].parentNode.addEventListener("click", function(event) {
+            popupAppear(overlayContainer, "Todo 수정하기", "수정하기");
+            document.getElementById("create_time").disabled = true;
+            let itemID = Number(items[i].id.replace("item-", ""));
+            let searchResult = findItem(itemID);
+            let clickedItemStatus = searchResult[0];
+            let clickedItem = searchResult[1];
+            let clickedItemIndex = searchResult[2];
+            setPopup(clickedItem.title, clickedItem.createTime, clickedItemStatus, clickedItem.description);
+            selectedItem = clickedItem;
+            selectedItemIndex = clickedItemIndex;
+            selectedItemStatus = clickedItemStatus;
+        }, false);
+    }
+
+    popupDisapppear(document.getElementById("overlay-container"));
+}
+function removeChildren(parentElement) {
+    let childrenNodes = parentElement.childNodes;
+    let childrenNum = childrenNodes.length;
+    for(let i = 0; i < childrenNum; i++) {
+        parentElement.removeChild(childrenNodes[0]);
+    }
+}
+function reloadList(parentElement, itemList) {
+    for(let i = 0; i < itemList.length; i++) {
+        // 빈칸 생성
+        let newBlankElement = document.createElement("li");
+        newBlankElement.setAttribute("class", "todo_item_blank");
+
+        // Item 생성
+        let newListElement = document.createElement("li");
+        let newDiv = document.createElement("div");
+        let newTitleNode = document.createElement("h3");
+        let newTitleText = document.createTextNode(itemList[i].title);
+        let newDateNode = document.createElement("p");
+        let newDateText = document.createTextNode(itemList[i].createTime);
+        newDiv.className = "todo_item";
+        newDiv.id = "item-" + itemList[i].id;
+
+        newDateNode.appendChild(newDateText);
+        newTitleNode.appendChild(newTitleText);
+        newDiv.appendChild(newTitleNode);
+        newDiv.appendChild(newDateNode);
+        newListElement.appendChild(newDiv);
+
+        parentElement.appendChild(newBlankElement);
+        parentElement.appendChild(newListElement);
+    }
+
+    let newLastBlankElement = document.createElement("li");
+    newLastBlankElement.setAttribute("class", "todo_item_blank last_blank");
+
+    parentElement.appendChild(newLastBlankElement);
+
+
+    let newBlankElement = document.createElement("li");
+    newBlankElement.setAttribute("class", "todo_item_blank");
 }
 
 function checkForm() {
@@ -319,21 +438,22 @@ function modifyTimeB(timeString) {
 
 function findItem(targetID) {
     let tableObject = todoTable;
+    let index = 0;
     let targetItem = null;
 
     for(let i = 0; i < tableObject.todo.length; i++) {
         if(tableObject.todo[i].id == targetID) {
-            return ["todo", tableObject.todo[i]];
+            return ["todo", tableObject.todo[i], i];
         }
     }
     for(let i = 0; i < tableObject.doing.length; i++) {
         if(tableObject.doing[i].id == targetID) {
-            return ["doing", tableObject.doing[i]];
+            return ["doing", tableObject.doing[i], i];
         }
     }
     for(let i = 0; i < tableObject.done.length; i++) {
         if(tableObject.done[i].id == targetID) {
-            return ["done", tableObject.done[i]];
+            return ["done", tableObject.done[i], i];
         }
     }
 }

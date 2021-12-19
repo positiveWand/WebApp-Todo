@@ -203,6 +203,8 @@ footer {
     height: 16rem;
 }
 #submit {
+    user-select: none;
+    justify-content: center;
     margin-top: 2rem;
 
     font-size: 2rem;

@@ -116,7 +116,7 @@
         </div>
         <div>
             <h3 id="popupTitle">Todo 추가하기</h3>
-            <form action="http://localhost:8080/main" method="post">
+            <form action="#">
                 <div>
                     <label for="title">제목</label>
                     <input type="text" id="title" class="form-input">
@@ -137,7 +137,7 @@
                     <label for="description">내용</label>
                     <div id="description" class="form-input" contenteditable="true"></div>
                 </div>
-                <input type="submit" id="submit" class="form-input">
+                <div id="submit" class="form-input">추가하기</div>
             </form>
         </div>
     </div>
