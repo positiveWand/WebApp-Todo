@@ -21,7 +21,7 @@ public class TodoDao {
             e.printStackTrace();
         }
 
-        String sql = "SELECT * from " + targetTable;
+        String sql = "SELECT * from " + targetTable + " where status=" + "'" + "todo" + "'" + " order by sequence";
         try (Connection conn = DriverManager.getConnection(dbURL, dbUser, dbPassword);
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
@@ -36,19 +36,61 @@ public class TodoDao {
 
                     TodoItem item = new TodoItem(id, title, description, createTime);
 
-                    switch (status) {
-                        case "todo":
-                            theTable.getTodo().getItemList().add(sequence, item);
-                            break;
-                        case "doing":
-                            theTable.getDoing().getItemList().add(sequence, item);
-                            break;
-                        case "done":
-                            theTable.getDone().getItemList().add(sequence, item);
-                            break;
-                        default:
-                            System.out.println("unknown item read.");
-                    }
+                    theTable.getTodo().getItemList().add(sequence, item);
+
+                    System.out.println(item);
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        sql = "SELECT * from " + targetTable + " where status=" + "'" + "doing" + "'" + " order by sequence";
+        try (Connection conn = DriverManager.getConnection(dbURL, dbUser, dbPassword);
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    int id = rs.getInt(1);
+                    String title = rs.getString(2);
+                    String description = rs.getString(3);
+                    String status = rs.getString(4);
+                    int sequence = rs.getInt(5);
+                    Timestamp createTime = rs.getTimestamp(6);
+
+                    TodoItem item = new TodoItem(id, title, description, createTime);
+
+                    theTable.getDoing().getItemList().add(sequence, item);
+
+                    System.out.println(item);
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        sql = "SELECT * from " + targetTable + " where status=" + "'" + "done" + "'" + " order by sequence";
+        try (Connection conn = DriverManager.getConnection(dbURL, dbUser, dbPassword);
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    int id = rs.getInt(1);
+                    String title = rs.getString(2);
+                    String description = rs.getString(3);
+                    String status = rs.getString(4);
+                    int sequence = rs.getInt(5);
+                    Timestamp createTime = rs.getTimestamp(6);
+
+                    TodoItem item = new TodoItem(id, title, description, createTime);
+
+                    theTable.getDone().getItemList().add(sequence, item);
 
                     System.out.println(item);
 
@@ -64,8 +106,7 @@ public class TodoDao {
     }
 
 
-    public int updateTodo(String targetTable, TodoTable newTable) {
-        TodoTable theTable = new TodoTable(targetTable);
+    public int updateTodo(TodoTable newTable) {
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -73,41 +114,38 @@ public class TodoDao {
             e.printStackTrace();
         }
 
-        String sql = "SELECT * from " + targetTable;
+        // Table 삭제
+        String sql = "DROP TABLE " + newTable.getName();
         try (Connection conn = DriverManager.getConnection(dbURL, dbUser, dbPassword);
              PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.executeUpdate();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        
+        // Table 재생성
+        sql = "CREATE TABLE " + newTable.getName() +
+                "("+
+                "id int NOT NULL DEFAULT 0," +
+                "title varchar(255) NOT NULL DEFAULT '제목 없음'," +
+                "description text," +
+                "status varchar(10) NOT NULL DEFAULT 'todo'," +
+                "sequence int NOT NULL DEFAULT 0," +
+                "create_time datetime NOT NULL DEFAULT CURRENT_TIMESTAMP," +
+                "PRIMARY KEY (id)" +
+                ")";
+        try (Connection conn = DriverManager.getConnection(dbURL, dbUser, dbPassword);
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.executeUpdate();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    int id = rs.getInt(1);
-                    String title = rs.getString(2);
-                    String description = rs.getString(3);
-                    String status = rs.getString(4);
-                    int sequence = rs.getInt(5);
-                    Timestamp createTime = rs.getTimestamp(6);
-
-                    TodoItem item = new TodoItem(id, title, description, createTime);
-
-                    switch (status) {
-                        case "todo":
-                            theTable.getTodo().getItemList().add(sequence, item);
-                            break;
-                        case "doing":
-                            theTable.getDoing().getItemList().add(sequence, item);
-                            break;
-                        case "done":
-                            theTable.getDone().getItemList().add(sequence, item);
-                            break;
-                        default:
-                            System.out.println("unknown item read.");
-                    }
-
-                    System.out.println(item);
-
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        // Table 갱신
+        sql = "INSERT INTO todo VALUES " + newTable.arrangeProperties();
+        try (Connection conn = DriverManager.getConnection(dbURL, dbUser, dbPassword);
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.executeUpdate();
         } catch (Exception ex) {
             ex.printStackTrace();
         }

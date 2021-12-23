@@ -292,12 +292,20 @@ function setPopup(title, create_time, status, description) {
 
 function updateTable() {
     // 데이터 서버에 전송
-    /*
-    let theResponse = await fetch("http://localhost:8080/updateTable", {method : "POST", body : todoTable.toString()});
-    let theObject = await theResponse.json();
-    */
+    let responseText = "";
+    tableReady = false;
+    fetch("http://localhost:8080/updateTable", {method : "POST", body : JSON.stringify(todoTable)}).then(data => {
+        data.text().then(data => {
+            if(data == "Success") {
+                tableReady = true;
+                drawTable();
+            }
+        });
+    });
 
-    // 화면 전환
+    popupDisapppear(document.getElementById("overlay-container"));
+}
+function drawTable() {
     let listType = ["todo", "doing", "done"];
     for(let i = 0; i < 3; i++) {
         removeChildren(document.querySelector("ul"+"#"+listType[i]+"_list"));
@@ -327,8 +335,6 @@ function updateTable() {
             selectedItemStatus = clickedItemStatus;
         }, false);
     }
-
-    popupDisapppear(document.getElementById("overlay-container"));
 }
 function removeChildren(parentElement) {
     let childrenNodes = parentElement.childNodes;
