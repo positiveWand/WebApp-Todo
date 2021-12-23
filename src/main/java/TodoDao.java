@@ -63,20 +63,55 @@ public class TodoDao {
         return theTable;
     }
 
-    public void testEncoding(String testString) {
-        String[] charSet = {"euc-kr", "utf-8", "ksc5601", "iso-8859-1", "x-windows-949"};
+
+    public int updateTodo(String targetTable, TodoTable newTable) {
+        TodoTable theTable = new TodoTable(targetTable);
+
         try {
-            for (int i = 0; i < charSet.length; i++) {
-                byte[] bytes = testString.getBytes(charSet[i]);
-                System.out.println(bytes);
-                System.out.println("[" + charSet[i] + "]" + new String(bytes));
-            }
-        } catch (Exception e) {
-
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
-    }
 
-    public int updateTodo() {
-        return -1;
+        String sql = "SELECT * from " + targetTable;
+        try (Connection conn = DriverManager.getConnection(dbURL, dbUser, dbPassword);
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    int id = rs.getInt(1);
+                    String title = rs.getString(2);
+                    String description = rs.getString(3);
+                    String status = rs.getString(4);
+                    int sequence = rs.getInt(5);
+                    Timestamp createTime = rs.getTimestamp(6);
+
+                    TodoItem item = new TodoItem(id, title, description, createTime);
+
+                    switch (status) {
+                        case "todo":
+                            theTable.getTodo().getItemList().add(sequence, item);
+                            break;
+                        case "doing":
+                            theTable.getDoing().getItemList().add(sequence, item);
+                            break;
+                        case "done":
+                            theTable.getDone().getItemList().add(sequence, item);
+                            break;
+                        default:
+                            System.out.println("unknown item read.");
+                    }
+
+                    System.out.println(item);
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return 1;
     }
 }
